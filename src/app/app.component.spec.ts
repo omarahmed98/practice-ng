@@ -2,9 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { TodoFormComponent } from './components/todo-form/todo-form.component';
 import { TodoListComponent } from './components/todo-list/todo-list.component';
-import { TodoService } from './core/services/todo.service';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 describe('AppComponent', () => {
+  let store: MockStore;
+  const initialState = { todos: [] };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
@@ -12,8 +15,10 @@ describe('AppComponent', () => {
         TodoFormComponent,
         TodoListComponent
       ],
-      providers: [TodoService]
+      providers: [provideMockStore({ initialState })] // Provide mock store instead of the service
     }).compileComponents();
+
+    store = TestBed.inject(MockStore); // Inject the mock store
   });
 
   it('should create the app', () => {
