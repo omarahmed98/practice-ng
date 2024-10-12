@@ -1,5 +1,5 @@
-<div>
-  <input type="checkbox" [checked]="todo.completed" (change)="onToggle()">
-  <span [class.completed]="todo.completed">{{ todo.title }}</span>
-  <button (click)="onRemove()">Remove</button>
+<div class="todo-item" [class.completed]="todo.completed">
+  <input type="checkbox" [checked]="todo.completed" (change)="onToggle()" class="todo-checkbox">
+  <span class="todo-title">{{ todo.title }}</span>
+  <button (click)="onRemove()" class="remove-button">Remove</button>
 </div>
