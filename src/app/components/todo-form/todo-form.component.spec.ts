@@ -1,26 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { TodoFormComponent } from './todo-form.component';
-import { TodoService } from '../../core/services/todo.service';
+import { Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import * as TodoActions from '../../store/actions/todo.actions';
 
 describe('TodoFormComponent', () => {
   let component: TodoFormComponent;
   let fixture: ComponentFixture<TodoFormComponent>;
-  let todoServiceMock: jest.Mocked<TodoService>;
+  let store: MockStore;
 
   beforeEach(async () => {
-    todoServiceMock = {
-      addTodo: jest.fn(),
-    } as any;
-
     await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
-      declarations: [ TodoFormComponent ],
-      providers: [{ provide: TodoService, useValue: todoServiceMock }]
+      imports: [FormsModule],
+      declarations: [TodoFormComponent],
+      providers: [provideMockStore()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TodoFormComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });
 
@@ -28,17 +27,21 @@ describe('TodoFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should add a todo when form is submitted with a non-empty title', () => {
+  it('should dispatch addTodo action when form is submitted with a non-empty title', () => {
+    const spy = jest.spyOn(store, 'dispatch');
     component.newTodoTitle = 'New Todo';
     component.onSubmit();
-    expect(todoServiceMock.addTodo).toHaveBeenCalledWith('New Todo');
+
+    expect(spy).toHaveBeenCalledWith(TodoActions.addTodo({ title: 'New Todo' }));
     expect(component.newTodoTitle).toBe('');
   });
 
-  it('should not add a todo when form is submitted with an empty title', () => {
+  it('should not dispatch addTodo action when form is submitted with an empty or whitespace title', () => {
+    const spy = jest.spyOn(store, 'dispatch');
     component.newTodoTitle = '   ';
     component.onSubmit();
-    expect(todoServiceMock.addTodo).not.toHaveBeenCalled();
+
+    expect(spy).not.toHaveBeenCalled();
     expect(component.newTodoTitle).toBe('   ');
   });
 });

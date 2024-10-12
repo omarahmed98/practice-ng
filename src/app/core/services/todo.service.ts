@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Todo } from '../../models/todo.model';
 
 @Injectable({
@@ -12,9 +12,9 @@ export class TodoService {
   constructor() {}
 
   getTodos(): Observable<Todo[]> {
-    return this.todosSubject.asObservable();
+    // Simulate API call
+    return of(this.todos);
   }
-
   addTodo(title: string): void {
     const newTodo: Todo = {
       id: this.todos.length + 1,

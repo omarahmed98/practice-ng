@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { TodoService } from '../../core/services/todo.service';
+import { Store } from '@ngrx/store';
+import * as TodoActions from '../../store/actions/todo.actions';
 
 @Component({
   selector: 'app-todo-form',
@@ -9,11 +10,11 @@ import { TodoService } from '../../core/services/todo.service';
 export class TodoFormComponent {
   newTodoTitle: string = '';
 
-  constructor(private todoService: TodoService) {}
+  constructor(private store: Store) {}
 
   onSubmit(): void {
     if (this.newTodoTitle.trim()) {
-      this.todoService.addTodo(this.newTodoTitle.trim());
+      this.store.dispatch(TodoActions.addTodo({ title: this.newTodoTitle.trim() }));
       this.newTodoTitle = '';
     }
   }

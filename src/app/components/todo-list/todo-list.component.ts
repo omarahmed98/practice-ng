@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Todo } from '../../models/todo.model';
-import { TodoService } from '../../core/services/todo.service';
+import { selectAllTodos } from '../../store/selectors/todo.selectors';
+import * as TodoActions from '../../store/actions/todo.actions';
 
 @Component({
   selector: 'app-todo-list',
@@ -11,17 +13,19 @@ import { TodoService } from '../../core/services/todo.service';
 export class TodoListComponent implements OnInit {
   todos$: Observable<Todo[]>;
 
-  constructor(private todoService: TodoService) {
-    this.todos$ = this.todoService.getTodos();
+  constructor(private store: Store) {
+    this.todos$ = this.store.select(selectAllTodos);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.dispatch(TodoActions.loadTodos());
+  }
 
   onToggleTodo(id: number): void {
-    this.todoService.toggleTodo(id);
+    this.store.dispatch(TodoActions.toggleTodo({ id }));
   }
 
   onRemoveTodo(id: number): void {
-    this.todoService.removeTodo(id);
+    this.store.dispatch(TodoActions.removeTodo({ id }));
   }
 }
